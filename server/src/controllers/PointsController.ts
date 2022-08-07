@@ -7,7 +7,7 @@ class PointsController {
       request.body;
 
     const point = {
-      image: "image-fake",
+      image: request.file?.filename,
       name,
       email,
       whatsapp,
@@ -22,12 +22,15 @@ class PointsController {
     try {
       const [insertedId] = await trx("points").insert(point);
 
-      const pointItems = items.map((item_id: number) => {
-        return {
-          item_id,
-          point_id: insertedId,
-        };
-      });
+      const pointItems = items
+        .split(",")
+        .map((item: string) => Number(item.trim()))
+        .map((item_id: number) => {
+          return {
+            item_id,
+            point_id: insertedId,
+          };
+        });
 
       await trx("point_items").insert(pointItems);
 
@@ -51,7 +54,12 @@ class PointsController {
         .join("point_items", "items.id", "=", "point_items.item_id")
         .where("point_items.point_id", id);
 
-      return response.json({ point, items });
+      const serializedPoint = {
+        ...point,
+        image_url: `http://192.168.0.114:3333/uploads/${point.image}`,
+      };
+
+      return response.json({ point: serializedPoint, items });
     } catch (error) {
       return response.json({ message: error });
     }
@@ -72,8 +80,15 @@ class PointsController {
       .distinct()
       .select("points.*");
 
+    const serializedPoints = points.map((point) => {
+      return {
+        ...point,
+        image_url: `http://192.168.0.114:3333/uploads/${point.image}`,
+      };
+    });
+
     try {
-      return response.json({ points });
+      return response.json({ points: serializedPoints });
     } catch (error) {
       return response.json({ message: error });
     }

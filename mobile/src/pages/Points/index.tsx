@@ -33,6 +33,7 @@ type Points = {
   latitude: number
   longitude: number
   image: string
+  image_url: string
 }
 
 type InitialPosition = {
@@ -140,7 +141,7 @@ export default function Points() {
                 longitudeDelta: 0.014,
               }}
             >
-              {points.map(({ id, image, latitude, longitude, name }) => (
+              {points.map(({ id, image_url, latitude, longitude, name }) => (
                 <Marker
                   key={id}
                   onPress={() => handleNavigateToDetail(id)}
@@ -153,7 +154,7 @@ export default function Points() {
                   <View style={styles.mapMarkerContainer}>
                     <Image
                       style={styles.mapMarkerImage}
-                      source={{ uri: image }}
+                      source={{ uri: image_url }}
                     />
                     <Text style={styles.mapMarkerTitle}>{name}</Text>
                   </View>

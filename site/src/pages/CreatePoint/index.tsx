@@ -13,6 +13,7 @@ import {
 
 import api from "../../services/api";
 import logo from "../../assets/logo.svg";
+import Dropzone from "../../components/Dropzone";
 
 import "./styles.css";
 
@@ -62,6 +63,7 @@ export default function CreatePoint() {
   const [selectedUf, setSelectedUf] = useState("RR");
   const [selectedCity, setSelectedCity] = useState("Boa Vista");
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -156,23 +158,28 @@ export default function CreatePoint() {
   ) => {
     event.preventDefault();
 
+    const data = new FormData();
+
     const { name, email, whatsapp } = formData;
     const uf = selectedUf;
     const city = selectedCity;
     const [latitude, longitude] = selectedPosition;
     const items = selectedItems;
-    const point = {
-      name,
-      email,
-      whatsapp,
-      uf,
-      city,
-      items,
-      latitude,
-      longitude,
-    };
 
-    await api.post("/points", point);
+    data.append("name", name);
+    data.append("email", email);
+    data.append("whatsapp", whatsapp);
+    data.append("uf", uf);
+    data.append("city", city);
+    data.append("items", items.join(", "));
+    data.append("latitude", String(latitude));
+    data.append("longitude", String(longitude));
+
+    if (selectedFile) data.append("image", selectedFile);
+
+    console.log("data", data);
+
+    await api.post("/points", data);
 
     setIsColectPointCreated(true);
   };
@@ -181,6 +188,7 @@ export default function CreatePoint() {
     setSelectedUf("");
     setSelectedCity("");
     setSelectedPosition([0, 0]);
+    setSelectedFile(null);
     setFormData({
       name: "",
       email: "",
@@ -207,6 +215,8 @@ export default function CreatePoint() {
           Cadastro do <br />
           ponto de coleta
         </h1>
+
+        <Dropzone onFileUploaded={setSelectedFile} />
 
         <fieldset>
           <legend>
@@ -286,7 +296,9 @@ export default function CreatePoint() {
               <select onChange={handleSelectUF} name="uf" id="uf">
                 <option value="">Selecione uma estado</option>
                 {ufs.map((initial) => (
-                  <option value={initial}>{initial}</option>
+                  <option key={initial} value={initial}>
+                    {initial}
+                  </option>
                 ))}
               </select>
             </div>
@@ -296,7 +308,9 @@ export default function CreatePoint() {
               <select onChange={handleSelectCity} name="city" id="city">
                 <option value="">Selecione uma cidade</option>
                 {citys.map((city) => (
-                  <option value={city}>{city}</option>
+                  <option key={city} value={city}>
+                    {city}
+                  </option>
                 ))}
               </select>
             </div>
