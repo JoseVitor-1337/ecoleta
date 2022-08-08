@@ -85,11 +85,6 @@ export default function Points() {
   }, [])
 
   useEffect(() => {
-    console.log('{ city, uf, items: selectedItems }', {
-      city,
-      uf,
-      items: selectedItems,
-    })
     api
       .get('points', {
         params: { city, uf, items: selectedItems },
