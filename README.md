@@ -9,11 +9,7 @@
 - Expo
 - React native
 
-<br />
-
 ## How do I start this site?
-
-<br />
 
 ## Prerequisites
 
@@ -23,15 +19,9 @@
 
 > Need have **expo-cli** installed [Go Here to install](https://docs.expo.io/)
 
-<br />
-
 ## Follow theses steps
 
-<br>
-
 Open you terminal and run this commands:
-
-<br>
 
 ## To Start Back End
 
@@ -46,8 +36,6 @@ npm start
 
 ```
 
-<br>
-
 ## To Start Front End (Web)
 
 Open the **frontend** folder in your terminal and run:
@@ -60,8 +48,6 @@ npm install
 npm start
 
 ```
-
-<br>
 
 ## To Start Mobile
 
